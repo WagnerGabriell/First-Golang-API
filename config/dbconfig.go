@@ -3,22 +3,29 @@ package config
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 func ConfigDb() *sql.DB {
 
-	cfg := mysql.Config{
-		User:   "",
-		Passwd: "",
-		Net:    "",
-		Addr:   "",
-		DBName: "",
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Erro ao carregar o arquivo .env")
 	}
 
-	db, err := sql.Open("mysql", cfg.FormatDSN())
-	// defer db.Close()
+	cfg := mysql.Config{
+		User:   os.Getenv("USER"),
+		Passwd: os.Getenv("PASSWD"),
+		Net:    os.Getenv("NET"),
+		Addr:   os.Getenv("ADDR"),
+		DBName: os.Getenv("DBNAME"),
+	}
+
+	db, err := sql.Open(os.Getenv("DRIVERNAME"), cfg.FormatDSN())
 
 	if err != nil {
 		panic(err)
